@@ -8,7 +8,7 @@
   body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    max-width: 900px;
+    max-width: 1000px;
   }
   textarea {
     width: 100%;
@@ -36,11 +36,22 @@
   th {
     background-color: #eee;
   }
-  input.total-global-input {
-    width: 100px;
-    font-size: 14px;
-    padding: 3px;
-    box-sizing: border-box;
+
+  /* Layout lado a lado */
+  .container-flex {
+    display: flex;
+    gap: 20px;
+  }
+  .box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .box > textarea {
+    flex-grow: 1;
+  }
+  .buttons-row {
+    margin-top: 5px;
   }
 </style>
 </head>
@@ -48,22 +59,42 @@
 
 <h1>Parser Box Office</h1>
 
-<p>Cole o texto bruto aqui (da box office) e clique em "Parse":</p>
-<textarea id="inputText" placeholder="Cole aqui o texto..."></textarea>
+<div class="container-flex">
+  <!-- Caixa original para box office normal -->
+  <div class="box" id="box1">
+    <p>Cole o texto bruto da box office e clique em "Parse":</p>
+    <textarea id="inputText1" placeholder="Cole aqui o texto..."></textarea>
 
-<br />
-<button id="parseBtn">Parse</button>
-<button id="exportBtn" disabled>Exportar CSV</button>
-<button id="clearBtn">Limpar</button>
+    <div class="buttons-row">
+      <button id="parseBtn1">Parse</button>
+      <button id="exportBtn1" disabled>Exportar CSV</button>
+      <button id="clearBtn1">Limpar</button>
+      <button id="openTop5" disabled>Abrir Top 5</button>
+      <button id="openTop6_10" disabled>Abrir Top 6-10</button>
+    </div>
 
-<br />
-<button id="openTop5" disabled>Abrir Top 5</button>
-<button id="openTop6_10" disabled>Abrir Top 6-10</button>
+    <div id="result1"></div>
+  </div>
 
-<div id="result"></div>
+  <!-- Caixa nova para Top 10 Worldwide -->
+  <div class="box" id="box2">
+    <p>Cole o texto bruto para o Top 10 Mundo Worldwide e clique em "Parse":</p>
+    <textarea id="inputText2" placeholder="Cole aqui o texto para Top 10..."></textarea>
+
+    <div class="buttons-row">
+      <button id="parseBtn2">Parse</button>
+      <button id="exportBtn2" disabled>Exportar CSV</button>
+      <button id="clearBtn2">Limpar</button>
+      <button id="openTop10" disabled>Abrir Top 10 Mundo</button>
+    </div>
+
+    <div id="result2"></div>
+  </div>
+</div>
 
 <script>
-  let parsedData = [];
+  // --- BOX 1 (box office normal) ---
+  let parsedData1 = [];
 
   function parseBoxOffice(input) {
     const linhas = input.trim().split('\n');
@@ -86,7 +117,6 @@
       const total = tokens[8];
       const semanas = parseInt(tokens[9]);
 
-      // Por defeito, totalGlobal vazio para preencher depois
       resultados.push({
         rank,
         lastRank,
@@ -94,8 +124,7 @@
         gross,
         percentLW,
         total,
-        semanas,
-        totalGlobal: ''  // vai ficar para preencher manualmente
+        semanas
       });
     });
 
@@ -106,11 +135,11 @@
     if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
 
     let html = '<table><thead><tr>';
-    const headers = ['Rank', 'Diff', 'Filme', 'Gross', '%± LW', 'Total', 'Semanas', 'Total Global'];
+    const headers = ['Rank', 'Diff', 'Filme', 'Gross', '%± LW', 'Total', 'Semanas'];
     headers.forEach(h => html += `<th>${h}</th>`);
     html += '</tr></thead><tbody>';
 
-    data.forEach((row, index) => {
+    data.forEach(row => {
       let diffSimbolo;
       if(row.lastRank === null) diffSimbolo = 'N';
       else if(row.lastRank === row.rank) diffSimbolo = '=';
@@ -125,8 +154,6 @@
       html += `<td>${row.percentLW}</td>`;
       html += `<td>${row.total}</td>`;
       html += `<td>${row.semanas}</td>`;
-      // Coluna editável para total global:
-      html += `<td><input class="total-global-input" type="text" value="${row.totalGlobal || ''}" data-index="${index}" /></td>`;
       html += '</tr>';
     });
 
@@ -135,7 +162,7 @@
   }
 
   function exportCSV(data) {
-    const headers = ['Rank', 'LastRank', 'Filme', 'Gross', 'PercentLW', 'Total', 'Semanas', 'TotalGlobal'];
+    const headers = ['Rank', 'LastRank', 'Filme', 'Gross', 'PercentLW', 'Total', 'Semanas'];
     const rows = data.map(row => [
       row.rank,
       row.lastRank !== null ? row.lastRank : '',
@@ -143,49 +170,29 @@
       row.gross,
       row.percentLW,
       row.total,
-      row.semanas,
-      `"${row.totalGlobal ? row.totalGlobal.replace(/"/g, '""') : ''}"`
+      row.semanas
     ]);
 
     const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
     return csvContent;
   }
 
-  document.getElementById('parseBtn').addEventListener('click', () => {
-    const inputText = document.getElementById('inputText').value;
-    parsedData = parseBoxOffice(inputText);
-    document.getElementById('result').innerHTML = gerarTabela(parsedData);
-    document.getElementById('exportBtn').disabled = parsedData.length === 0;
+  document.getElementById('parseBtn1').addEventListener('click', () => {
+    const inputText = document.getElementById('inputText1').value;
+    parsedData1 = parseBoxOffice(inputText);
+    document.getElementById('result1').innerHTML = gerarTabela(parsedData1);
+    document.getElementById('exportBtn1').disabled = parsedData1.length === 0;
+    document.getElementById('openTop5').disabled = parsedData1.length === 0;
+    document.getElementById('openTop6_10').disabled = parsedData1.length < 6;
 
-    document.getElementById('openTop5').disabled = parsedData.length === 0;
-    document.getElementById('openTop6_10').disabled = parsedData.length < 6;
-
-    // Guarda no sessionStorage para as outras páginas lerem
-    sessionStorage.setItem('boxOfficeTop5', JSON.stringify(parsedData.slice(0,5)));
-    sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(parsedData.slice(5,10)));
-
-    // Atualiza inputs do total global para salvar ao editar
-    adicionaListenerTotalGlobal();
+    sessionStorage.setItem('boxOfficeTop5', JSON.stringify(parsedData1.slice(0,5)));
+    sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(parsedData1.slice(5,10)));
   });
 
-  function adicionaListenerTotalGlobal() {
-    document.querySelectorAll('.total-global-input').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const index = parseInt(e.target.dataset.index);
-        if (!isNaN(index)) {
-          parsedData[index].totalGlobal = e.target.value;
-          // Atualiza sessionStorage com totalGlobal modificado
-          sessionStorage.setItem('boxOfficeTop5', JSON.stringify(parsedData.slice(0,5)));
-          sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(parsedData.slice(5,10)));
-        }
-      });
-    });
-  }
+  document.getElementById('exportBtn1').addEventListener('click', () => {
+    if(parsedData1.length === 0) return;
 
-  document.getElementById('exportBtn').addEventListener('click', () => {
-    if(parsedData.length === 0) return;
-
-    const csv = exportCSV(parsedData);
+    const csv = exportCSV(parsedData1);
     const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
     const url = URL.createObjectURL(blob);
 
@@ -196,13 +203,13 @@
     URL.revokeObjectURL(url);
   });
 
-  document.getElementById('clearBtn').addEventListener('click', () => {
-    document.getElementById('inputText').value = '';
-    document.getElementById('result').innerHTML = '';
-    document.getElementById('exportBtn').disabled = true;
+  document.getElementById('clearBtn1').addEventListener('click', () => {
+    document.getElementById('inputText1').value = '';
+    document.getElementById('result1').innerHTML = '';
+    document.getElementById('exportBtn1').disabled = true;
     document.getElementById('openTop5').disabled = true;
     document.getElementById('openTop6_10').disabled = true;
-    parsedData = [];
+    parsedData1 = [];
     sessionStorage.removeItem('boxOfficeTop5');
     sessionStorage.removeItem('boxOfficeTop6_10');
   });
@@ -215,6 +222,117 @@
     window.open('top.html?range=top6-10', '_blank');
   });
 
+  // --- BOX 2 (top 10 worldwide) ---
+  let parsedData2 = [];
+
+  function parseTop10Worldwide(input) {
+    const linhas = input.trim().split('\n');
+    const linhasValidas = linhas.filter(l => l.trim() !== '');
+
+    const resultados = [];
+
+    linhasValidas.forEach(linha => {
+      const tokens = linha.trim().split('\t');  // tab separated
+
+      // Espera 7 tokens: rank, título, valor1, valor2, %, valor3, %
+      if(tokens.length < 7) return;
+
+      const rank = parseInt(tokens[0]);
+      const filme = tokens[1];
+      const worldwide = tokens[5]; // o valor global que queres mostrar
+
+      resultados.push({
+        rank,
+        filme,
+        worldwide
+      });
+    });
+
+    return resultados;
+  }
+
+  function gerarTabelaTop10(data) {
+    if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
+
+    let html = '<table><thead><tr>';
+    const headers = ['Rank', 'Filme', 'Total Mundial'];
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr></thead><tbody>';
+
+    data.forEach(row => {
+      html += '<tr>';
+      html += `<td style="font-weight:bold; font-size: 20px;">${row.rank}</td>`;
+      // título com tamanho adaptativo: 24px máximo, diminui se precisar
+      const maxFontSize = 24;
+      const minFontSize = 12;
+      let fontSize = maxFontSize;
+
+      // Ajusta o tamanho do texto para caber numa largura máxima de 300px
+      // Nota: sem medir o texto real no browser, aqui fazemos uma aproximação simples:
+      const maxWidthPx = 300;
+      const approxCharWidth = fontSize * 0.6; // média aprox por char
+
+      while(row.filme.length * approxCharWidth > maxWidthPx && fontSize > minFontSize) {
+        fontSize -= 1;
+      }
+
+      html += `<td style="font-weight:bold; font-size:${fontSize}px; text-align:left; max-width:300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${row.filme}</td>`;
+      html += `<td>${row.worldwide}</td>`;
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    return html;
+  }
+
+  function exportCSVTop10(data) {
+    const headers = ['Rank', 'Filme', 'Total Mundial'];
+    const rows = data.map(row => [
+      row.rank,
+      `"${row.filme.replace(/"/g, '""')}"`,
+      row.worldwide
+    ]);
+
+    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+    return csvContent;
+  }
+
+  document.getElementById('parseBtn2').addEventListener('click', () => {
+    const inputText = document.getElementById('inputText2').value;
+    parsedData2 = parseTop10Worldwide(inputText);
+    document.getElementById('result2').innerHTML = gerarTabelaTop10(parsedData2);
+    document.getElementById('exportBtn2').disabled = parsedData2.length === 0;
+    document.getElementById('openTop10').disabled = parsedData2.length === 0;
+
+    sessionStorage.setItem('top10Worldwide', JSON.stringify(parsedData2));
+  });
+
+  document.getElementById('exportBtn2').addEventListener('click', () => {
+    if(parsedData2.length === 0) return;
+
+    const csv = exportCSVTop10(parsedData2);
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'top10worldwide.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('clearBtn2').addEventListener('click', () => {
+    document.getElementById('inputText2').value = '';
+    document.getElementById('result2').innerHTML = '';
+    document.getElementById('exportBtn2').disabled = true;
+    document.getElementById('openTop10').disabled = true;
+    parsedData2 = [];
+    sessionStorage.removeItem('top10Worldwide');
+  });
+
+  document.getElementById('openTop10').addEventListener('click', () => {
+    window.open('top10.html', '_blank');
+  });
 </script>
 
 </body>
