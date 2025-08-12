@@ -1,0 +1,260 @@
+body {
+  background-color: #1a1a2e;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background-color: #16213e;
+  padding: 20px;
+  border-radius: 10px;
+  width: 550px;
+  height: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  /* Remove esta linha: text-align: center; */
+  
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fundo blur escuro no container */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -10px;    /* subir 10px */
+  left: -10px;
+  right: -10px;
+  bottom: -10px; /* descer 10px */
+  background-image: var(--poster-url);
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.2);
+  z-index: 0;
+  border-radius: 10px;
+  transition: background-image 0.3s ease;
+}
+
+/* Conteúdo do container à frente do fundo */
+.container > * {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;  /* empilha verticalmente */
+  align-items: flex-start; /* alinha tudo à esquerda */
+  margin-bottom: 20px;
+  color: white;
+  text-align: left;        /* força alinhamento à esquerda */
+  padding-left: 80px;  /* alinhamento horizontal */
+}
+
+.header-text {
+  width: 100%;
+}
+
+.header-text .small {
+  font-size: 12px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+
+.big-medium-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.big-medium-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.big {
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+.medium {
+  font-size: 18px;
+  color: #ccc;
+  margin-top: 3px;
+}
+
+.header img {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.movie-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Movie item com fundo blur e escurecido */
+.movie-item {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  box-sizing: border-box;
+
+
+}
+
+/* Fundo com poster em blur e escuro usando CSS variable */
+.movie-item::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: var(--poster-url);
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.4);
+  z-index: 0;
+  transition: background-image 0.3s ease;
+  border-radius: 5px;
+}
+
+/* Conteúdo do filme por cima do fundo */
+.movie-item > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* rank vai ficar entre poster e fim da caixa, alargamos largura e centramos texto */
+.rank {
+  width: 40px;
+  font-weight: bold;
+  font-size: 40px;
+  flex-shrink: 0;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 20px;
+  line-height: 1;
+  padding-top: 0;
+}
+
+/* Poster com proporção 9:16, altura 90px */
+.poster {
+  width: 60px; /* 2/3 da altura 90px */
+  height: 90px;
+  background-color: #222;
+  margin-right: 10px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  object-fit: cover; /* garante que a imagem preenche a área */
+}
+
+/* Ajustar movie-details para alinhar o título no topo e posicionar ícone */
+.movie-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-grow: 1;
+  position: relative;
+}
+
+/* título do filme fica alinhado com topo do poster e texto maior */
+.movie-title {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 6px;
+  margin-top: 3px;
+  text-align: left;
+}
+
+/* Informação abaixo do título, centrada verticalmente */
+.movie-info {
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+  align-items: center;
+  height: 30px;
+}
+
+.left {
+  flex: 1;
+  text-align: left;
+}
+
+.center {
+  flex: 1;
+  text-align: center;
+}
+
+.right {
+  flex: 1;
+  text-align: right;
+}
+
+/* Total mundial para a esquerda */
+.world-total {
+  color: #888;
+  font-size: 13px;
+  text-align: left;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Ícone no fundo direito da movie-details */
+.icon {
+  width: 24px;       /* tamanho fixo para todos */
+  height: 24px;
+  position: absolute;
+  bottom: 5px;      /* afastado do fundo */
+  right: 5px;       /* afastado da direita */
+  object-fit: contain; /* para manter proporção da imagem */
+  z-index: 2;        /* acima do fundo */
+}
+
+.header img:not(.popcorn-icon) {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.popcorn-icon {
+  width: 55px !important;
+  height: 55px !important;
+  margin-left: 10px;
+  object-fit: contain;
+}
+
+.bottom-text {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  text-align: center;
+  font-size: 48px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.473);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  
+}

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parser Box Office</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    max-width: 900px;
+  }
+  textarea {
+    width: 100%;
+    height: 180px;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 20px;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #999;
+    padding: 6px 12px;
+    text-align: center;
+  }
+  th {
+    background-color: #eee;
+  }
+  label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  select {
+    font-size: 16px;
+    padding: 4px 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Parser Box Office</h1>
+
+<p>Cole o texto bruto aqui (da box office) e clique em "Parse":</p>
+<textarea id="inputText" placeholder="Cole aqui o texto..."></textarea>
+
+<br />
+
+<label for="weekSelect">Selecionar fim de semana:</label>
+<select id="weekSelect"></select>
+
+<br />
+
+<button id="parseBtn">Parse</button>
+<button id="exportBtn" disabled>Exportar CSV</button>
+<button id="clearBtn">Limpar</button>
+
+<br />
+<button id="openTop5" disabled>Abrir Top 5</button>
+<button id="openTop6_10" disabled>Abrir Top 6-10</button>
+
+<div id="result"></div>
+
+<script>
+  let parsedData = [];
+
+  function parseBoxOffice(input) {
+    const linhas = input.trim().split('\n');
+    const linhasValidas = linhas.filter(l => l.trim() !== '');
+
+    const resultados = [];
+
+    linhasValidas.forEach(linha => {
+      const tokens = linha.trim().split('\t');  // split por tab
+
+      if(tokens.length < 10) return;
+
+      const rank = parseInt(tokens[0]);
+      const lastRankRaw = tokens[1];
+      const lastRank = lastRankRaw === '-' ? null : parseInt(lastRankRaw);
+
+      const filme = tokens[2];
+      const gross = tokens[3];
+      const percentLW = tokens[4];
+      const total = tokens[8];
+      const semanas = parseInt(tokens[9]);
+
+      resultados.push({
+        rank,
+        lastRank,
+        filme,
+        gross,
+        percentLW,
+        total,
+        semanas
+      });
+    });
+
+    return resultados;
+  }
+
+  function gerarTabela(data) {
+    if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
+
+    let html = '<table><thead><tr>';
+    const headers = ['Rank', 'Diff', 'Filme', 'Gross', '%± LW', 'Total', 'Semanas'];
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += '</tr></thead><tbody>';
+
+    data.forEach(row => {
+      let diffSimbolo;
+      if(row.lastRank === null) diffSimbolo = 'N';
+      else if(row.lastRank === row.rank) diffSimbolo = '=';
+      else if(row.lastRank > row.rank) diffSimbolo = '+';
+      else if(row.lastRank < row.rank) diffSimbolo = '-';
+
+      html += '<tr>';
+      html += `<td>${row.rank}</td>`;
+      html += `<td>${diffSimbolo}</td>`;
+      html += `<td>${row.filme}</td>`;
+      html += `<td>${row.gross}</td>`;
+      html += `<td>${row.percentLW}</td>`;
+      html += `<td>${row.total}</td>`;
+      html += `<td>${row.semanas}</td>`;
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    return html;
+  }
+
+  function exportCSV(data) {
+    const headers = ['Rank', 'LastRank', 'Filme', 'Gross', 'PercentLW', 'Total', 'Semanas'];
+    const rows = data.map(row => [
+      row.rank,
+      row.lastRank !== null ? row.lastRank : '',
+      `"${row.filme.replace(/"/g, '""')}"`,
+      row.gross,
+      row.percentLW,
+      row.total,
+      row.semanas
+    ]);
+
+    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
+    return csvContent;
+  }
+
+  function getWeekendsShort(year) {
+    const mesesAbrev = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const weekends = [];
+    let date = new Date(year, 0, 1);
+    while (date.getDay() !== 5) { date.setDate(date.getDate() + 1); } // primeiro sexta
+    for (let weekNumber = 1; weekNumber <= 52; weekNumber++) {
+      const sexta = new Date(date);
+      const domingo = new Date(date);
+      domingo.setDate(domingo.getDate() + 2);
+
+      let textoData;
+      if (sexta.getMonth() === domingo.getMonth()) {
+        textoData = `${sexta.getDate()} - ${domingo.getDate()} ${mesesAbrev[sexta.getMonth()]}`;
+      } else {
+        textoData = `${sexta.getDate()} ${mesesAbrev[sexta.getMonth()]} - ${domingo.getDate()} ${mesesAbrev[domingo.getMonth()]}`;
+      }
+
+      weekends.push({ semana: weekNumber, texto: `Semana ${weekNumber} — ${textoData}` });
+      date.setDate(date.getDate() + 7);
+    }
+    return weekends;
+  }
+
+  // Preenche o dropdown das semanas
+  function preencherDropdown() {
+    const select = document.getElementById('weekSelect');
+    const currentYear = new Date().getFullYear();
+    const weekends = getWeekendsShort(currentYear);
+
+    weekends.forEach(w => {
+      const option = document.createElement('option');
+      option.value = w.texto; // valor curto, ex: "Semana 32 — 8 - 10 Ago"
+      option.textContent = w.texto;
+      select.appendChild(option);
+    });
+  }
+
+  preencherDropdown();
+
+  document.getElementById('parseBtn').addEventListener('click', () => {
+    const inputText = document.getElementById('inputText').value;
+    parsedData = parseBoxOffice(inputText);
+    document.getElementById('result').innerHTML = gerarTabela(parsedData);
+    document.getElementById('exportBtn').disabled = parsedData.length === 0;
+
+    document.getElementById('openTop5').disabled = parsedData.length === 0;
+    document.getElementById('openTop6_10').disabled = parsedData.length < 6;
+
+    // Guarda no sessionStorage para as outras páginas lerem
+    sessionStorage.setItem('boxOfficeTop5', JSON.stringify(parsedData.slice(0,5)));
+    sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(parsedData.slice(5,10)));
+
+    // Guarda também a semana selecionada
+    const selectedWeekend = document.getElementById('weekSelect').value;
+    sessionStorage.setItem('selectedWeekend', selectedWeekend);
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if(parsedData.length === 0) return;
+
+    const csv = exportCSV(parsedData);
+    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'boxoffice.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    document.getElementById('inputText').value = '';
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('exportBtn').disabled = true;
+    document.getElementById('openTop5').disabled = true;
+    document.getElementById('openTop6_10').disabled = true;
+    parsedData = [];
+    sessionStorage.removeItem('boxOfficeTop5');
+    sessionStorage.removeItem('boxOfficeTop6_10');
+    sessionStorage.removeItem('selectedWeekend');
+  });
+
+  document.getElementById('openTop5').addEventListener('click', () => {
+    window.open('top.html?range=top5', '_blank');
+  });
+
+  document.getElementById('openTop6_10').addEventListener('click', () => {
+    window.open('top.html?range=top6-10', '_blank');
+  });
+</script>
+
+</body>
+</html>
