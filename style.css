@@ -212,11 +212,10 @@ body {
 
 /* Total mundial para a esquerda */
 .world-total {
-  color: #888;
+  color: #ffffff;
   font-size: 13px;
   text-align: left;
   margin-top: 5px;
-  font-style: italic;
 }
 
 /* Ícone no fundo direito da movie-details */

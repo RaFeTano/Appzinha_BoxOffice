@@ -21,39 +21,14 @@ async function fetchPoster(title) {
   }
 }
 
-function mapShortToFull(textoCurto) {
-  // exemplo: "Semana 32 — 8 - 10 Ago"
-  // Extrair só a parte da data: "8 - 10 Ago"
-  const mesesPorExtenso = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  const currentYear = new Date().getFullYear();
-  const regex = /Semana \d+ — (\d+) - (\d+) (\w{3})/;
-  const match = textoCurto.match(regex);
-  if (!match) return textoCurto; // se falhar, retorna o original
-
-  const diaInicio = match[1];
-  const diaFim = match[2];
-  const mesAbrev = match[3];
-
-  // Converter mês abreviado para índice
-  const indexMes = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'].indexOf(mesAbrev);
-  if (indexMes === -1) return textoCurto;
-
-  const mesCompleto = mesesPorExtenso[indexMes];
-
-  return `(Fim de Semana) ${diaInicio} - ${diaFim} ${mesCompleto} ${currentYear}`;
-}
-
 async function renderMovies(movies, title, range) {
-  // Obtem o fim de semana selecionado do sessionStorage
-  const selectedWeekend = sessionStorage.getItem('selectedWeekend') || title;
-
   document.getElementById('header').innerHTML = `
     <div class="header-text">
       <span class="small">@Rafe.Studios</span>
       <div class="big-medium-wrapper">
         <div class="big-medium-text">
           <span class="big">${title}</span>
-          <span class="medium">${mapShortToFull(selectedWeekend)}</span>
+          <span class="medium">(Fim de Semana 1-3 Agosto 2025)</span>
         </div>
         <img src="Imagens/popcorn.png" alt="Popcorn" class="popcorn-icon" />
       </div>
@@ -78,7 +53,6 @@ async function renderMovies(movies, title, range) {
 
     const posterURL = await fetchPoster(movie.filme);
 
-    // Se for Top 5 → usar rank 1 | Se for Top 6-10 → usar rank 6
     if ((range === 'top5' && movie.rank === 1) || (range === 'top6-10' && movie.rank === 6)) {
       containerPoster = posterURL;
     }
@@ -90,11 +64,11 @@ async function renderMovies(movies, title, range) {
         <div class="movie-details">
           <div class="movie-title">${movie.filme}</div>
           <div class="movie-info">
-            <div class="left">${movie.gross}</div>
+            <div class="left">🇺🇸 ${movie.gross}</div>
             <div class="center">${movie.semanas === 1 ? "Estreia" : movie.percentLW} (${movie.semanas})</div>
             <div class="right">Total: ${movie.total}</div>
           </div>
-          <div class="world-total">Total Mundial: 0000000</div>
+          <div class="world-total">🌎 Total Mundial: ${movie.totalGlobal || 'N/A'}</div>
         </div>
         <img src="" alt="Icon" class="icon" data-diff="${diffSimbolo}" />
       </li>
@@ -103,12 +77,10 @@ async function renderMovies(movies, title, range) {
 
   ul.innerHTML = moviesHTML.join('');
 
-  // Aplica o poster no container
   if (containerPoster) {
     document.querySelector(".container").style.setProperty("--poster-url", `url(${containerPoster})`);
   }
 
-  // Atualiza os ícones consoante o símbolo
   document.querySelectorAll('.movie-item .icon').forEach(icon => {
     const status = icon.dataset.diff;
     switch (status) {
