@@ -1,0 +1,189 @@
+body {
+  background-color: #1a1a2e;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background-color: #16213e;
+  padding: 20px;
+  border-radius: 10px;
+  width: 550px;
+  height: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Fundo blur escuro no container */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background-image: var(--poster-url);
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.2);
+  z-index: 0;
+  border-radius: 10px;
+  transition: background-image 0.3s ease;
+}
+
+/* Conteúdo do container à frente do fundo */
+.container > * {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  margin-bottom: 20px;
+  padding-left: 85px;
+}
+
+/* @Rafe.Studios em linha separada à esquerda */
+.header > .small {
+  font-size: 12px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+}
+
+/* wrapper para as duas linhas e ícone lado a lado */
+.big-medium-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Texto com as duas linhas alinhadas à esquerda */
+.big-medium-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.big {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.medium {
+  font-size: 18px;
+  color: #ccc;
+  margin-top: 3px;
+}
+
+/* Ícone pipoca alinhado à direita e na mesma linha */
+.popcorn-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+/* lista de filmes */
+.movie-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 620px;
+  overflow-y: auto;
+}
+
+/* Movie item com fundo blur e escurecido */
+.movie-item {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+/* Fundo com poster em blur e escuro usando CSS variable */
+.movie-item::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: var(--poster-url);
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.4);
+  z-index: 0;
+  transition: background-image 0.3s ease;
+  border-radius: 5px;
+}
+
+/* Conteúdo do filme por cima do fundo */
+.movie-item > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* rank vai ficar entre poster e fim da caixa, alargamos largura e centramos texto */
+.rank {
+  width: 50px;
+  font-size: 32px;
+  font-weight: bold;
+  flex-shrink: 0;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 20px;
+  line-height: 1;
+  padding-top: 0;
+  user-select: none;
+}
+
+.movie-details {
+  display: flex;
+  justify-content: space-between; /* título à esquerda, total à direita */
+  align-items: center;
+  flex-grow: 1;
+  min-width: 0; /* importante para flex-shrink funcionar */
+}
+
+.movie-title {
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;  /* título encolhe se necessário */
+  min-width: 0;    /* para permitir encolher */
+  margin-right: 10px; /* espaço entre título e total */
+}
+
+.worldwide-total {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ccc;
+  white-space: nowrap;
+  user-select: none;
+  flex-shrink: 0;  /* total nunca encolhe */
+}
+
+

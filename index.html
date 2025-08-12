@@ -226,30 +226,29 @@
   let parsedData2 = [];
 
   function parseTop10Worldwide(input) {
-    const linhas = input.trim().split('\n');
-    const linhasValidas = linhas.filter(l => l.trim() !== '');
+  const linhas = input.trim().split('\n');
+  const linhasValidas = linhas.filter(l => l.trim() !== '');
 
-    const resultados = [];
+  const resultados = [];
 
-    linhasValidas.forEach(linha => {
-      const tokens = linha.trim().split('\t');  // tab separated
+  linhasValidas.forEach(linha => {
+    const tokens = linha.trim().split('\t');
 
-      // Espera 7 tokens: rank, título, valor1, valor2, %, valor3, %
-      if(tokens.length < 7) return;
+    if(tokens.length < 3) return;
 
-      const rank = parseInt(tokens[0]);
-      const filme = tokens[1];
-      const worldwide = tokens[5]; // o valor global que queres mostrar
+    const rank = parseInt(tokens[0]);
+    const filme = tokens[1];
+    const worldwide = tokens[2];  // Ajusta aqui para a posição correta
 
-      resultados.push({
-        rank,
-        filme,
-        worldwide
-      });
+    resultados.push({
+      rank,
+      filme,
+      worldwide
     });
+  });
 
-    return resultados;
-  }
+  return resultados;
+}
 
   function gerarTabelaTop10(data) {
     if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
