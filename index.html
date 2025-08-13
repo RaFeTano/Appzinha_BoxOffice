@@ -4,335 +4,40 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Parser Box Office</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    max-width: 1000px;
-  }
-  textarea {
-    width: 100%;
-    height: 180px;
-    font-family: monospace;
-    font-size: 14px;
-  }
-  button {
-    margin-top: 10px;
-    padding: 8px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  table {
-    border-collapse: collapse;
-    margin-top: 20px;
-    width: 100%;
-  }
-  th, td {
-    border: 1px solid #999;
-    padding: 6px 12px;
-    text-align: center;
-  }
-  th {
-    background-color: #eee;
-  }
-
-  /* Layout lado a lado */
-  .container-flex {
-    display: flex;
-    gap: 20px;
-  }
-  .box {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .box > textarea {
-    flex-grow: 1;
-  }
-  .buttons-row {
-    margin-top: 5px;
-  }
-</style>
+<link rel="stylesheet" href="index.css" />
 </head>
 <body>
 
 <h1>Parser Box Office</h1>
 
 <div class="container-flex">
-  <!-- Caixa original para box office normal -->
-  <div class="box" id="box1">
-    <p>Cole o texto bruto da box office e clique em "Parse":</p>
-    <textarea id="inputText1" placeholder="Cole aqui o texto..."></textarea>
-
-    <div class="buttons-row">
-      <button id="parseBtn1">Parse</button>
-      <button id="exportBtn1" disabled>Exportar CSV</button>
-      <button id="clearBtn1">Limpar</button>
-      <button id="openTop5" disabled>Abrir Top 5</button>
-      <button id="openTop6_10" disabled>Abrir Top 6-10</button>
+  <div class="boxes-left">
+    <div class="box" id="box1">
+      <p>Cole o texto bruto da box office e clique em "Parse":</p>
+      <textarea id="inputText1" placeholder="Cole aqui o texto..."></textarea>
+      <div class="buttons-row">
+        <button id="parseBtn1">Parse</button>
+        <button id="clearBtn1">Limpar</button>
+      </div>
     </div>
 
-    <div id="result1"></div>
+    <div class="box" id="box2">
+      <p>Cole o texto bruto para o Top 10 Mundo Worldwide e clique em "Parse":</p>
+      <textarea id="inputText2" placeholder="Cole aqui o texto para Top 10..."></textarea>
+      <div class="buttons-row">
+        <button id="parseBtn2">Parse</button>
+        <button id="clearBtn2">Limpar</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Caixa nova para Top 10 Worldwide -->
-  <div class="box" id="box2">
-    <p>Cole o texto bruto para o Top 10 Mundo Worldwide e clique em "Parse":</p>
-    <textarea id="inputText2" placeholder="Cole aqui o texto para Top 10..."></textarea>
-
-    <div class="buttons-row">
-      <button id="parseBtn2">Parse</button>
-      <button id="exportBtn2" disabled>Exportar CSV</button>
-      <button id="clearBtn2">Limpar</button>
-      <button id="openTop10" disabled>Abrir Top 10 Mundo</button>
-    </div>
-
+  <div class="table-right">
+    <div id="result1"></div>
     <div id="result2"></div>
   </div>
 </div>
 
-<script>
-  // --- BOX 1 (box office normal) ---
-  let parsedData1 = [];
 
-  function parseBoxOffice(input) {
-    const linhas = input.trim().split('\n');
-    const linhasValidas = linhas.filter(l => l.trim() !== '');
-
-    const resultados = [];
-
-    linhasValidas.forEach(linha => {
-      const tokens = linha.trim().split('\t');  // split por tab
-
-      if(tokens.length < 10) return;
-
-      const rank = parseInt(tokens[0]);
-      const lastRankRaw = tokens[1];
-      const lastRank = lastRankRaw === '-' ? null : parseInt(lastRankRaw);
-
-      const filme = tokens[2];
-      const gross = tokens[3];
-      const percentLW = tokens[4];
-      const total = tokens[8];
-      const semanas = parseInt(tokens[9]);
-
-      resultados.push({
-        rank,
-        lastRank,
-        filme,
-        gross,
-        percentLW,
-        total,
-        semanas
-      });
-    });
-
-    return resultados;
-  }
-
-  function gerarTabela(data) {
-    if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
-
-    let html = '<table><thead><tr>';
-    const headers = ['Rank', 'Diff', 'Filme', 'Gross', '%± LW', 'Total', 'Semanas'];
-    headers.forEach(h => html += `<th>${h}</th>`);
-    html += '</tr></thead><tbody>';
-
-    data.forEach(row => {
-      let diffSimbolo;
-      if(row.lastRank === null) diffSimbolo = 'N';
-      else if(row.lastRank === row.rank) diffSimbolo = '=';
-      else if(row.lastRank > row.rank) diffSimbolo = '+';
-      else if(row.lastRank < row.rank) diffSimbolo = '-';
-
-      html += '<tr>';
-      html += `<td>${row.rank}</td>`;
-      html += `<td>${diffSimbolo}</td>`;
-      html += `<td>${row.filme}</td>`;
-      html += `<td>${row.gross}</td>`;
-      html += `<td>${row.percentLW}</td>`;
-      html += `<td>${row.total}</td>`;
-      html += `<td>${row.semanas}</td>`;
-      html += '</tr>';
-    });
-
-    html += '</tbody></table>';
-    return html;
-  }
-
-  function exportCSV(data) {
-    const headers = ['Rank', 'LastRank', 'Filme', 'Gross', 'PercentLW', 'Total', 'Semanas'];
-    const rows = data.map(row => [
-      row.rank,
-      row.lastRank !== null ? row.lastRank : '',
-      `"${row.filme.replace(/"/g, '""')}"`,
-      row.gross,
-      row.percentLW,
-      row.total,
-      row.semanas
-    ]);
-
-    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
-    return csvContent;
-  }
-
-  document.getElementById('parseBtn1').addEventListener('click', () => {
-    const inputText = document.getElementById('inputText1').value;
-    parsedData1 = parseBoxOffice(inputText);
-    document.getElementById('result1').innerHTML = gerarTabela(parsedData1);
-    document.getElementById('exportBtn1').disabled = parsedData1.length === 0;
-    document.getElementById('openTop5').disabled = parsedData1.length === 0;
-    document.getElementById('openTop6_10').disabled = parsedData1.length < 6;
-
-    sessionStorage.setItem('boxOfficeTop5', JSON.stringify(parsedData1.slice(0,5)));
-    sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(parsedData1.slice(5,10)));
-  });
-
-  document.getElementById('exportBtn1').addEventListener('click', () => {
-    if(parsedData1.length === 0) return;
-
-    const csv = exportCSV(parsedData1);
-    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'boxoffice.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  document.getElementById('clearBtn1').addEventListener('click', () => {
-    document.getElementById('inputText1').value = '';
-    document.getElementById('result1').innerHTML = '';
-    document.getElementById('exportBtn1').disabled = true;
-    document.getElementById('openTop5').disabled = true;
-    document.getElementById('openTop6_10').disabled = true;
-    parsedData1 = [];
-    sessionStorage.removeItem('boxOfficeTop5');
-    sessionStorage.removeItem('boxOfficeTop6_10');
-  });
-
-  document.getElementById('openTop5').addEventListener('click', () => {
-    window.open('top.html?range=top5', '_blank');
-  });
-
-  document.getElementById('openTop6_10').addEventListener('click', () => {
-    window.open('top.html?range=top6-10', '_blank');
-  });
-
-  // --- BOX 2 (top 10 worldwide) ---
-  let parsedData2 = [];
-
-  function parseTop10Worldwide(input) {
-  const linhas = input.trim().split('\n');
-  const linhasValidas = linhas.filter(l => l.trim() !== '');
-
-  const resultados = [];
-
-  linhasValidas.forEach(linha => {
-    const tokens = linha.trim().split('\t');
-
-    if(tokens.length < 3) return;
-
-    const rank = parseInt(tokens[0]);
-    const filme = tokens[1];
-    const worldwide = tokens[2];  // Ajusta aqui para a posição correta
-
-    resultados.push({
-      rank,
-      filme,
-      worldwide
-    });
-  });
-
-  return resultados;
-}
-
-  function gerarTabelaTop10(data) {
-    if(data.length === 0) return '<p>Nenhum dado válido encontrado.</p>';
-
-    let html = '<table><thead><tr>';
-    const headers = ['Rank', 'Filme', 'Total Mundial'];
-    headers.forEach(h => html += `<th>${h}</th>`);
-    html += '</tr></thead><tbody>';
-
-    data.forEach(row => {
-      html += '<tr>';
-      html += `<td style="font-weight:bold; font-size: 20px;">${row.rank}</td>`;
-      // título com tamanho adaptativo: 24px máximo, diminui se precisar
-      const maxFontSize = 24;
-      const minFontSize = 12;
-      let fontSize = maxFontSize;
-
-      // Ajusta o tamanho do texto para caber numa largura máxima de 300px
-      // Nota: sem medir o texto real no browser, aqui fazemos uma aproximação simples:
-      const maxWidthPx = 300;
-      const approxCharWidth = fontSize * 0.6; // média aprox por char
-
-      while(row.filme.length * approxCharWidth > maxWidthPx && fontSize > minFontSize) {
-        fontSize -= 1;
-      }
-
-      html += `<td style="font-weight:bold; font-size:${fontSize}px; text-align:left; max-width:300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${row.filme}</td>`;
-      html += `<td>${row.worldwide}</td>`;
-      html += '</tr>';
-    });
-
-    html += '</tbody></table>';
-    return html;
-  }
-
-  function exportCSVTop10(data) {
-    const headers = ['Rank', 'Filme', 'Total Mundial'];
-    const rows = data.map(row => [
-      row.rank,
-      `"${row.filme.replace(/"/g, '""')}"`,
-      row.worldwide
-    ]);
-
-    const csvContent = [headers, ...rows].map(r => r.join(',')).join('\n');
-    return csvContent;
-  }
-
-  document.getElementById('parseBtn2').addEventListener('click', () => {
-    const inputText = document.getElementById('inputText2').value;
-    parsedData2 = parseTop10Worldwide(inputText);
-    document.getElementById('result2').innerHTML = gerarTabelaTop10(parsedData2);
-    document.getElementById('exportBtn2').disabled = parsedData2.length === 0;
-    document.getElementById('openTop10').disabled = parsedData2.length === 0;
-
-    sessionStorage.setItem('top10Worldwide', JSON.stringify(parsedData2));
-  });
-
-  document.getElementById('exportBtn2').addEventListener('click', () => {
-    if(parsedData2.length === 0) return;
-
-    const csv = exportCSVTop10(parsedData2);
-    const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'top10worldwide.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  document.getElementById('clearBtn2').addEventListener('click', () => {
-    document.getElementById('inputText2').value = '';
-    document.getElementById('result2').innerHTML = '';
-    document.getElementById('exportBtn2').disabled = true;
-    document.getElementById('openTop10').disabled = true;
-    parsedData2 = [];
-    sessionStorage.removeItem('top10Worldwide');
-  });
-
-  document.getElementById('openTop10').addEventListener('click', () => {
-    window.open('top10.html', '_blank');
-  });
-</script>
-
+<script src="index.js"></script>
 </body>
 </html>

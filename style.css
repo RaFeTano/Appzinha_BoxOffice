@@ -257,3 +257,18 @@ body {
   z-index: 1;
   
 }
+
+/* Wrapper para ter os dois tops lado a lado */
+.tops-wrapper {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: nowrap; /* força lado a lado */
+}
+
+/* Faz os dois containers ocuparem metade do espaço cada */
+.tops-wrapper .container {
+ 
+  height: 750px; /* mantém altura original */
+}
+

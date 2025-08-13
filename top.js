@@ -1,9 +1,4 @@
-function getRange() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('range') || 'top5';
-}
-
-const tmdbApiKey = '9c2f7a7aaf9a57d7c1578d1d4f1f0145'; // substitui pela tua chave TMDb
+const tmdbApiKey = '9c2f7a7aaf9a57d7c1578d1d4f1f0145';
 
 async function fetchPoster(title) {
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${encodeURIComponent(title)}&year=2025`;
@@ -21,8 +16,9 @@ async function fetchPoster(title) {
   }
 }
 
-async function renderMovies(movies, title, range) {
-  document.getElementById('header').innerHTML = `
+async function renderMovies(movies, title, range, ulId, containerId) {
+  const headerEl = document.getElementById(range === 'top5' ? 'headerTop5' : 'headerTop6_10');
+  headerEl.innerHTML = `
     <div class="header-text">
       <span class="small">@Rafe.Studios</span>
       <div class="big-medium-wrapper">
@@ -35,7 +31,7 @@ async function renderMovies(movies, title, range) {
     </div>
   `;
 
-  const ul = document.getElementById('movieList');
+  const ul = document.getElementById(ulId);
   if (movies.length === 0) {
     ul.innerHTML = '<li>Nenhum dado para mostrar.</li>';
     return;
@@ -44,7 +40,6 @@ async function renderMovies(movies, title, range) {
   let containerPoster = "";
 
   const moviesHTML = await Promise.all(movies.map(async (movie) => {
-    // Calcula o símbolo para a diferença (lastRank)
     let diffSimbolo;
     if (movie.lastRank === null) diffSimbolo = 'N';
     else if (movie.lastRank === movie.rank) diffSimbolo = '=';
@@ -68,7 +63,7 @@ async function renderMovies(movies, title, range) {
             <div class="center">${movie.semanas === 1 ? "Estreia" : movie.percentLW} (${movie.semanas})</div>
             <div class="right">Total: ${movie.total}</div>
           </div>
-          <div class="world-total">🌎 Total Mundial: ${movie.totalGlobal || 'N/A'}</div>
+          <div class="world-total">🌎 Total Mundial: ${movie.worldwide || 'N/A'}</div>
         </div>
         <img src="" alt="Icon" class="icon" data-diff="${diffSimbolo}" />
       </li>
@@ -78,10 +73,10 @@ async function renderMovies(movies, title, range) {
   ul.innerHTML = moviesHTML.join('');
 
   if (containerPoster) {
-    document.querySelector(".container").style.setProperty("--poster-url", `url(${containerPoster})`);
+    document.getElementById(containerId).style.setProperty("--poster-url", `url(${containerPoster})`);
   }
 
-  document.querySelectorAll('.movie-item .icon').forEach(icon => {
+  document.querySelectorAll(`#${ulId} .icon`).forEach(icon => {
     const status = icon.dataset.diff;
     switch (status) {
       case 'N':
@@ -108,15 +103,9 @@ async function renderMovies(movies, title, range) {
 }
 
 (async () => {
-  const range = getRange();
-  let dataKey = 'boxOfficeTop5';
-  let title = 'Box Office Top 5';
+  const top5 = JSON.parse(sessionStorage.getItem('boxOfficeTop5') || '[]');
+  const top6_10 = JSON.parse(sessionStorage.getItem('boxOfficeTop6_10') || '[]');
 
-  if (range === 'top6-10') {
-    dataKey = 'boxOfficeTop6_10';
-    title = 'Box Office Top 6-10';
-  }
-
-  const movies = JSON.parse(sessionStorage.getItem(dataKey) || '[]');
-  await renderMovies(movies, title, range);
+  await renderMovies(top5, 'Box Office Top 5', 'top5', 'movieListTop5', 'top5Container');
+  await renderMovies(top6_10, 'Box Office Top 6-10', 'top6-10', 'movieListTop6_10', 'top6_10Container');
 })();

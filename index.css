@@ -1,0 +1,118 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1a1a2e;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Container principal: boxes à esquerda, tabelas à direita */
+.container-flex {
+  display: flex;
+  flex-direction: row; /* esquerda e direita */
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  align-items: flex-start;
+}
+
+/* Caixas à esquerda empilhadas verticalmente */
+.boxes-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 33%;
+}
+
+/* Cada box individual */
+.box {
+  background-color: #16213e;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.box p {
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 120px;
+  font-family: monospace;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  padding: 8px;
+  resize: none;
+}
+
+button {
+  padding: 8px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0f3460;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #16213e;
+}
+
+.buttons-row {
+  margin-top: 10px;
+}
+
+/* Container da tabela à direita */
+.table-right {
+  width: 66%;
+}
+
+/* Tabela em si */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+th, td {
+  border: 1px solid #999;
+  padding: 6px 10px;
+  text-align: left;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+th {
+  background-color: #0f3460;
+}
+
+.botao-abrir {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #53354a;
+}
+
+.botao-abrir:hover {
+  background-color: #903749;
+}
+
+input.worldwide-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: white;
+  text-align: right;
+  font-weight: bold;
+}
