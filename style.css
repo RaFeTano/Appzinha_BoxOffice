@@ -272,3 +272,25 @@ body {
   height: 750px; /* mantém altura original */
 }
 
+.tops-wrapper {
+  display: flex;
+  gap: 20px; /* espaço entre os tops */
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.save-btn {
+  margin: 10px auto 30px auto;
+  display: block;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #53354a;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #903749;
+}

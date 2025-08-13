@@ -16,8 +16,8 @@ async function fetchPoster(title) {
   }
 }
 
-async function renderMovies(movies, title, range, ulId, containerId) {
-  const headerEl = document.getElementById(range === 'top5' ? 'headerTop5' : 'headerTop6_10');
+async function renderMovies(movies, containerId, headerId, title) {
+  const headerEl = document.getElementById(headerId);
   headerEl.innerHTML = `
     <div class="header-text">
       <span class="small">@Rafe.Studios</span>
@@ -31,14 +31,13 @@ async function renderMovies(movies, title, range, ulId, containerId) {
     </div>
   `;
 
-  const ul = document.getElementById(ulId);
-  if (movies.length === 0) {
-    ul.innerHTML = '<li>Nenhum dado para mostrar.</li>';
-    return;
-  }
+  const container = document.getElementById(containerId).parentElement;
+  if (movies.length === 0) return;
 
-  let containerPoster = "";
+  let firstPoster = await fetchPoster(movies[0].filme);
+  container.style.setProperty('--poster-url', `url(${firstPoster})`);
 
+  const ul = document.getElementById(containerId);
   const moviesHTML = await Promise.all(movies.map(async (movie) => {
     let diffSimbolo;
     if (movie.lastRank === null) diffSimbolo = 'N';
@@ -47,10 +46,6 @@ async function renderMovies(movies, title, range, ulId, containerId) {
     else diffSimbolo = '-';
 
     const posterURL = await fetchPoster(movie.filme);
-
-    if ((range === 'top5' && movie.rank === 1) || (range === 'top6-10' && movie.rank === 6)) {
-      containerPoster = posterURL;
-    }
 
     return `
       <li class="movie-item" style="--poster-url: url(${posterURL})">
@@ -72,40 +67,58 @@ async function renderMovies(movies, title, range, ulId, containerId) {
 
   ul.innerHTML = moviesHTML.join('');
 
-  if (containerPoster) {
-    document.getElementById(containerId).style.setProperty("--poster-url", `url(${containerPoster})`);
-  }
-
-  document.querySelectorAll(`#${ulId} .icon`).forEach(icon => {
+  document.querySelectorAll(`#${containerId} .icon`).forEach(icon => {
     const status = icon.dataset.diff;
     switch (status) {
-      case 'N':
-        icon.src = 'Imagens/NOVO.PNG';
-        icon.alt = 'Novo';
-        break;
-      case '+':
-        icon.src = 'Imagens/SUBIU.PNG';
-        icon.alt = 'Subiu';
-        break;
-      case '-':
-        icon.src = 'Imagens/DESCEU.PNG';
-        icon.alt = 'Desceu';
-        break;
-      case '=':
-        icon.src = 'Imagens/MANTEU.PNG';
-        icon.alt = 'Manteve';
-        break;
-      default:
-        icon.src = '';
-        icon.alt = '';
+      case 'N': icon.src = 'Imagens/NOVO.PNG'; icon.alt='Novo'; break;
+      case '+': icon.src = 'Imagens/SUBIU.PNG'; icon.alt='Subiu'; break;
+      case '-': icon.src = 'Imagens/DESCEU.PNG'; icon.alt='Desceu'; break;
+      case '=': icon.src = 'Imagens/MANTEU.PNG'; icon.alt='Manteve'; break;
+      default: icon.src=''; icon.alt=''; 
     }
   });
+
+  // Espera que todas as imagens carreguem antes de capturar
+  await Promise.all(Array.from(container.querySelectorAll('img')).map(img => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(resolve => img.onload = resolve);
+  }));
 }
 
 (async () => {
-  const top5 = JSON.parse(sessionStorage.getItem('boxOfficeTop5') || '[]');
-  const top6_10 = JSON.parse(sessionStorage.getItem('boxOfficeTop6_10') || '[]');
+  const top5Movies = JSON.parse(sessionStorage.getItem('boxOfficeTop5') || '[]');
+  const top6Movies = JSON.parse(sessionStorage.getItem('boxOfficeTop6_10') || '[]');
 
-  await renderMovies(top5, 'Box Office Top 5', 'top5', 'movieListTop5', 'top5Container');
-  await renderMovies(top6_10, 'Box Office Top 6-10', 'top6-10', 'movieListTop6_10', 'top6_10Container');
+  await renderMovies(top5Movies, 'movieListTop5', 'headerTop5', 'Box Office Top 5');
+  await renderMovies(top6Movies, 'movieListTop6', 'headerTop6', 'Box Office Top 6-10');
 })();
+
+document.getElementById('savePNGs').addEventListener('click', async () => {
+  const containers = ['top5Container','top6Container'];
+
+  for (const id of containers) {
+    const node = document.getElementById(id);
+
+    // converte imagens externas para PNG via proxy
+    const options = {
+      proxy: 'https://cors-anywhere.herokuapp.com/', // proxy gratuito para CORS
+      filter: (node) => true,
+      cacheBust: true
+    };
+
+    try {
+      const dataUrl = await domtoimage.toPng(node, options);
+      const link = document.createElement('a');
+      link.download = `${id}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Erro ao gerar PNG:', err);
+    }
+  }
+});
+
+
+
+
+
