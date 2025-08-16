@@ -19,6 +19,8 @@ async function fetchPoster(title) {
 async function renderTop10() {
   const movies = JSON.parse(sessionStorage.getItem('top10Worldwide') || '[]');
   const ul = document.getElementById('movieList');
+  if (!ul) return;
+
   if (movies.length === 0) {
     ul.innerHTML = '<li>Nenhum dado para mostrar.</li>';
     return;
@@ -28,6 +30,7 @@ async function renderTop10() {
 
   const itemsHTML = await Promise.all(movies.map(async (movie) => {
     const posterURL = await fetchPoster(movie.filme);
+    console.log(movie.worldwide); // Confirma os valores
 
     // Guarda o poster do primeiro filme para o container background
     if (movie.rank === 1) {
@@ -49,7 +52,10 @@ async function renderTop10() {
 
   // Aplica o poster no container
   if (containerPoster) {
-    document.querySelector('.container').style.setProperty('--poster-url', `url(${containerPoster})`);
+    const container = document.querySelector('.container');
+    if (container) {
+      container.style.setProperty('--poster-url', `url(${containerPoster})`);
+    }
   }
 }
 

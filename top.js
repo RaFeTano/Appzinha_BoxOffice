@@ -78,7 +78,6 @@ async function renderMovies(movies, containerId, headerId, title) {
     }
   });
 
-  // Espera que todas as imagens carreguem antes de capturar
   await Promise.all(Array.from(container.querySelectorAll('img')).map(img => {
     if (img.complete) return Promise.resolve();
     return new Promise(resolve => img.onload = resolve);
@@ -92,33 +91,3 @@ async function renderMovies(movies, containerId, headerId, title) {
   await renderMovies(top5Movies, 'movieListTop5', 'headerTop5', 'Box Office Top 5');
   await renderMovies(top6Movies, 'movieListTop6', 'headerTop6', 'Box Office Top 6-10');
 })();
-
-document.getElementById('savePNGs').addEventListener('click', async () => {
-  const containers = ['top5Container','top6Container'];
-
-  for (const id of containers) {
-    const node = document.getElementById(id);
-
-    // converte imagens externas para PNG via proxy
-    const options = {
-      proxy: 'https://cors-anywhere.herokuapp.com/', // proxy gratuito para CORS
-      filter: (node) => true,
-      cacheBust: true
-    };
-
-    try {
-      const dataUrl = await domtoimage.toPng(node, options);
-      const link = document.createElement('a');
-      link.download = `${id}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error('Erro ao gerar PNG:', err);
-    }
-  }
-});
-
-
-
-
-

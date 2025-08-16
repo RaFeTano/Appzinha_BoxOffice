@@ -1,5 +1,5 @@
 body {
-  background-color: #1a1a2e;
+  background-color: #202020;
   color: #fff;
   font-family: Arial, sans-serif;
   display: flex;
@@ -10,30 +10,23 @@ body {
 }
 
 .container {
-  background-color: #16213e;
-  padding: 20px;
-  border-radius: 10px;
-  width: 550px;
+  width: 650px; /* nova largura */
   height: 750px;
-  margin-left: auto;
-  margin-right: auto;
-  /* Remove esta linha: text-align: center; */
-  
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* mantém conteúdo empilhado verticalmente */
+  align-items: center;    /* centra horizontalmente tudo dentro do container */
   position: relative;
   overflow: hidden;
 }
 
-/* Fundo blur escuro no container */
 .container::before {
   content: "";
   position: absolute;
-  top: -10px;    /* subir 10px */
+  top: -10px;
   left: -10px;
   right: -10px;
-  bottom: -10px; /* descer 10px */
+  bottom: -10px;
   background-image: var(--poster-url);
   background-size: cover;
   background-position: center;
@@ -43,7 +36,6 @@ body {
   transition: background-image 0.3s ease;
 }
 
-/* Conteúdo do container à frente do fundo */
 .container > * {
   position: relative;
   z-index: 1;
@@ -51,12 +43,12 @@ body {
 
 .header {
   display: flex;
-  flex-direction: column;  /* empilha verticalmente */
-  align-items: flex-start; /* alinha tudo à esquerda */
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 20px;
   color: white;
-  text-align: left;        /* força alinhamento à esquerda */
-  padding-left: 80px;  /* alinhamento horizontal */
+  text-align: left;
+  padding-left: 80px;
 }
 
 .header-text {
@@ -68,7 +60,6 @@ body {
   margin-bottom: 5px;
   box-sizing: border-box;
 }
-
 
 .big-medium-wrapper {
   display: flex;
@@ -107,10 +98,10 @@ body {
   margin: 0;
 }
 
-/* Movie item com fundo blur e escurecido */
+/* Mantemos o tamanho do movie-item fixo */
 .movie-item {
   position: relative;
-  width: 100%;
+  width: 510px; /* mantém o mesmo tamanho interno */
   height: 100px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -120,11 +111,8 @@ body {
   align-items: center;
   padding: 6px 10px;
   box-sizing: border-box;
-
-
 }
 
-/* Fundo com poster em blur e escuro usando CSS variable */
 .movie-item::before {
   content: "";
   position: absolute;
@@ -138,13 +126,11 @@ body {
   border-radius: 5px;
 }
 
-/* Conteúdo do filme por cima do fundo */
 .movie-item > * {
   position: relative;
   z-index: 1;
 }
 
-/* rank vai ficar entre poster e fim da caixa, alargamos largura e centramos texto */
 .rank {
   width: 40px;
   font-weight: bold;
@@ -157,18 +143,16 @@ body {
   padding-top: 0;
 }
 
-/* Poster com proporção 9:16, altura 90px */
 .poster {
-  width: 60px; /* 2/3 da altura 90px */
+  width: 60px;
   height: 90px;
   background-color: #222;
   margin-right: 10px;
   flex-shrink: 0;
   border-radius: 3px;
-  object-fit: cover; /* garante que a imagem preenche a área */
+  object-fit: cover;
 }
 
-/* Ajustar movie-details para alinhar o título no topo e posicionar ícone */
 .movie-details {
   display: flex;
   flex-direction: column;
@@ -177,7 +161,6 @@ body {
   position: relative;
 }
 
-/* título do filme fica alinhado com topo do poster e texto maior */
 .movie-title {
   font-weight: bold;
   font-size: 20px;
@@ -186,7 +169,6 @@ body {
   text-align: left;
 }
 
-/* Informação abaixo do título, centrada verticalmente */
 .movie-info {
   display: flex;
   font-size: 14px;
@@ -210,7 +192,6 @@ body {
   text-align: right;
 }
 
-/* Total mundial para a esquerda */
 .world-total {
   color: #ffffff;
   font-size: 13px;
@@ -218,15 +199,14 @@ body {
   margin-top: 5px;
 }
 
-/* Ícone no fundo direito da movie-details */
 .icon {
-  width: 24px;       /* tamanho fixo para todos */
+  width: 24px;
   height: 24px;
   position: absolute;
-  bottom: 5px;      /* afastado do fundo */
-  right: 5px;       /* afastado da direita */
-  object-fit: contain; /* para manter proporção da imagem */
-  z-index: 2;        /* acima do fundo */
+  bottom: 5px;
+  right: 5px;
+  object-fit: contain;
+  z-index: 2;
 }
 
 .header img:not(.popcorn-icon) {
@@ -255,42 +235,22 @@ body {
   pointer-events: none;
   user-select: none;
   z-index: 1;
-  
 }
 
-/* Wrapper para ter os dois tops lado a lado */
 .tops-wrapper {
   display: flex;
   gap: 20px;
   justify-content: center;
-  flex-wrap: nowrap; /* força lado a lado */
+  flex-wrap: nowrap;
 }
 
-/* Faz os dois containers ocuparem metade do espaço cada */
 .tops-wrapper .container {
- 
-  height: 750px; /* mantém altura original */
+  height: 750px;
 }
 
 .tops-wrapper {
   display: flex;
-  gap: 20px; /* espaço entre os tops */
+  gap: 20px;
   justify-content: center;
   align-items: flex-start;
-}
-
-.save-btn {
-  margin: 10px auto 30px auto;
-  display: block;
-  padding: 8px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #53354a;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.save-btn:hover {
-  background-color: #903749;
 }

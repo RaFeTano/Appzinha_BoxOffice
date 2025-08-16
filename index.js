@@ -72,20 +72,17 @@ function gerarTabela(data, containerId) {
   });
 
   document.getElementById('abrirTops').addEventListener('click', () => {
-  const top5 = parsedData1.slice(0, 5);
-  const top6_10 = parsedData1.slice(5, 10);
+    const top5 = parsedData1.slice(0, 5);
+    const top6_10 = parsedData1.slice(5, 10);
 
-  sessionStorage.setItem('boxOfficeTop5', JSON.stringify(top5));
-  sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(top6_10));
+    sessionStorage.setItem('boxOfficeTop5', JSON.stringify(top5));
+    sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(top6_10));
 
-  // Abre Top 5 imediatamente
-  window.open('top.html?range=top5', '_blank');
-
-  // Abre Top 6-10 com ligeiro atraso (50ms)
-  setTimeout(() => {
-    window.open('top.html?range=top6-10', '_blank');
-  }, 500);
-});
+    window.open('top.html?range=top5', '_blank');
+    setTimeout(() => {
+      window.open('top.html?range=top6-10', '_blank');
+    }, 500);
+  });
 }
 
 // Eventos Box1
@@ -159,6 +156,19 @@ function gerarTabelaTop10(data) {
 document.getElementById('parseBtn2').addEventListener('click', () => {
   const inputText = document.getElementById('inputText2').value;
   parsedData2 = parseTop10Worldwide(inputText);
+
+  // Preenche valores worldwide vazios com '0' antes de guardar
+  parsedData2 = parsedData2.map(item => {
+    if (!item.worldwide || item.worldwide.trim() === '') {
+      item.worldwide = '0';
+    }
+    return item;
+  });
+
+  // Guarda os 10 primeiros no sessionStorage
+  sessionStorage.setItem('top10Worldwide', JSON.stringify(parsedData2.slice(0, 10)));
+
+  // Gera a tabela
   gerarTabelaTop10(parsedData2);
 });
 
