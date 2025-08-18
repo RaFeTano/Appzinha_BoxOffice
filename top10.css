@@ -10,14 +10,15 @@ body {
 }
 
 .container {
-  width: 650px; /* nova largura */
-  height: 750px;
+  width: 600px;
+  height: 770px;
   padding: 20px;
   display: flex;
-  flex-direction: column; /* mantém conteúdo empilhado verticalmente */
-  align-items: center;    /* centra horizontalmente tudo dentro do container */
+  flex-direction: column;
+  align-items: center;
   position: relative;
   overflow: hidden;
+  border-radius: 10px;
 }
 
 /* Fundo blur escuro no container */
@@ -41,6 +42,7 @@ body {
 .container > * {
   position: relative;
   z-index: 1;
+  margin-top: 10px;
 }
 
 .header {
@@ -48,12 +50,10 @@ body {
   flex-direction: column;
   color: white;
   margin-bottom: 20px;
-  padding-left: 85px;
 }
 
 .header > .small {
   font-size: 12px;
-  align-self: flex-start;
   margin-bottom: 10px;
 }
 
@@ -82,11 +82,26 @@ body {
   margin-top: 3px;
 }
 
+.small {
+  font-size: 15px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
 .popcorn-icon {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  margin-left: 10px;
+  width: 50px !important;
+  height: 50px !important;
+  margin-bottom: 10px;
+  margin-left: 15px;
+  object-fit: contain;
+}
+
+.flag-icon {
+  width: 50px !important;
+  height: 50px !important;
+  margin-bottom: 0px;
+  margin-right: 20px;
+  object-fit: contain;
 }
 
 .movie-list {
@@ -95,16 +110,15 @@ body {
   margin: 0;
   height: 620px;
   overflow-y: auto;
-
   display: flex;
   flex-direction: column;
-  align-items: center; /* centraliza todos os itens horizontalmente */
+  align-items: center;
 }
 
 .movie-item {
   position: relative;
-  width: 90%; /* mantém largura controlada */
-  max-width: 600px; /* opcional: limita para não esticar demasiado */
+  width: 90%;
+  max-width: 600px;
   height: 50px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -114,11 +128,10 @@ body {
   align-items: center;
   padding: 6px 10px;
   box-sizing: border-box;
-
-  /* centraliza no container */
   margin-left: auto;
   margin-right: auto;
 }
+
 .movie-item::before {
   content: "";
   position: absolute;
@@ -155,7 +168,7 @@ body {
   align-items: center;
   flex-grow: 1;
   min-width: 0;
-  gap: 10px; /* espaço entre título e total */
+  gap: 10px;
 }
 
 .movie-title {
@@ -167,7 +180,7 @@ body {
   text-overflow: ellipsis;
   flex-shrink: 1;
   min-width: 0;
-  max-width: 500px; /* garante que não some */
+  max-width: 500px;
 }
 
 .worldwide-total {
@@ -176,6 +189,5 @@ body {
   color: #ccc;
   white-space: nowrap;
   flex-shrink: 0;
-  
   text-align: right;
 }

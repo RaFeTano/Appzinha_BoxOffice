@@ -6,10 +6,7 @@ function gerarFinsDeSemana(ano) {
   const finsDeSemana = [];
   let data = new Date(ano, 0, 1);
 
-  // ir até sexta-feira da primeira semana
-  while (data.getDay() !== 5) {
-    data.setDate(data.getDate() + 1);
-  }
+  while (data.getDay() !== 5) data.setDate(data.getDate() + 1);
 
   while (data.getFullYear() === ano) {
     const sexta = new Date(data);
@@ -17,11 +14,9 @@ function gerarFinsDeSemana(ano) {
     domingo.setDate(domingo.getDate() + 2);
 
     if (domingo.getFullYear() === ano) {
-      // formatar como "15-17 Agosto 2025"
       const optionsMes = { month: "long" };
       const mes = sexta.toLocaleDateString("pt-PT", optionsMes);
       const label = `${sexta.getDate()}-${domingo.getDate()} ${mes.charAt(0).toUpperCase() + mes.slice(1)} ${ano}`;
-
       finsDeSemana.push({ value: label, label });
     }
 
@@ -31,7 +26,7 @@ function gerarFinsDeSemana(ano) {
   return finsDeSemana;
 }
 
-// Preencher dropdown ao carregar a página
+// Dropdown fins de semana
 const weekendSelect = document.getElementById("weekendSelect");
 const fins = gerarFinsDeSemana(2025);
 fins.forEach(f => {
@@ -41,17 +36,14 @@ fins.forEach(f => {
   weekendSelect.appendChild(opt);
 });
 
-// Recuperar última seleção do sessionStorage
 const savedWeekend = sessionStorage.getItem("selectedWeekend");
-if (savedWeekend) {
-  weekendSelect.value = savedWeekend;
-}
+if (savedWeekend) weekendSelect.value = savedWeekend;
 
-// Guardar sempre que muda
 weekendSelect.addEventListener("change", () => {
   sessionStorage.setItem("selectedWeekend", weekendSelect.value);
 });
 
+// Parse Box Office
 function parseBoxOffice(input) {
   const linhas = input.trim().split('\n').filter(l => l.trim() !== '');
   const resultados = [];
@@ -127,22 +119,15 @@ function gerarTabela(data, containerId) {
 
     sessionStorage.setItem('boxOfficeTop5', JSON.stringify(top5));
     sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(top6_10));
-
-    // Guardar o fim de semana escolhido
-    const weekend = weekendSelect.value;
-    sessionStorage.setItem("selectedWeekend", weekend);
+    sessionStorage.setItem("selectedWeekend", weekendSelect.value);
 
     window.open('top.html?range=top5', '_blank');
-    setTimeout(() => {
-      window.open('top.html?range=top6-10', '_blank');
-    }, 500);
+    setTimeout(() => window.open('top.html?range=top6-10', '_blank'), 500);
   });
 }
 
-// Eventos Box1
 document.getElementById('parseBtn1').addEventListener('click', () => {
-  const inputText = document.getElementById('inputText1').value;
-  parsedData1 = parseBoxOffice(inputText);
+  parsedData1 = parseBoxOffice(document.getElementById('inputText1').value);
   gerarTabela(parsedData1, 'result1');
 });
 
@@ -198,29 +183,29 @@ function gerarTabelaTop10(data) {
   html += '</tbody></table>';
   container.innerHTML = html;
 
-  const btnAbrir = document.createElement('button');
-  btnAbrir.textContent = 'Abrir Top 10 Mundo';
-  btnAbrir.className = 'botao-abrir';
-  btnAbrir.onclick = () => window.open('top10.html', '_blank');
-  container.appendChild(btnAbrir);
+  // Botões abrir Top 10
+  const btnMundo = document.createElement('button');
+  btnMundo.textContent = 'Abrir Top 10 Mundo';
+  btnMundo.className = 'botao-abrir';
+  btnMundo.onclick = () => window.open('top10.html?region=world', '_blank');
+  container.appendChild(btnMundo);
+
+  const btnPortugal = document.createElement('button');
+  btnPortugal.textContent = 'Abrir Top 10 Portugal';
+  btnPortugal.className = 'botao-abrir';
+  btnPortugal.onclick = () => window.open('top10.html?region=pt', '_blank');
+  container.appendChild(btnPortugal);
 }
 
-// Eventos Box2
 document.getElementById('parseBtn2').addEventListener('click', () => {
-  const inputText = document.getElementById('inputText2').value;
-  parsedData2 = parseTop10Worldwide(inputText);
+  parsedData2 = parseTop10Worldwide(document.getElementById('inputText2').value);
 
-  // Preenche valores worldwide vazios com '0'
   parsedData2 = parsedData2.map(item => {
-    if (!item.worldwide || item.worldwide.trim() === '') {
-      item.worldwide = '0';
-    }
+    if (!item.worldwide || item.worldwide.trim() === '') item.worldwide = '0';
     return item;
   });
 
-  // Guarda no sessionStorage
   sessionStorage.setItem('top10Worldwide', JSON.stringify(parsedData2.slice(0, 10)));
-
   gerarTabelaTop10(parsedData2);
 });
 

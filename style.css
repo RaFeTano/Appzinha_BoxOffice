@@ -10,8 +10,8 @@ body {
 }
 
 .container {
-  width: 650px; /* nova largura */
-  height: 750px;
+  width: 600px; /* nova largura */
+  height: 770px;
   padding: 20px;
   display: flex;
   flex-direction: column; /* mantém conteúdo empilhado verticalmente */
@@ -39,6 +39,7 @@ body {
 .container > * {
   position: relative;
   z-index: 1;
+  margin-top: 10px;
 }
 
 .header {
@@ -56,7 +57,7 @@ body {
 }
 
 .header-text .small {
-  font-size: 12px;
+  font-size: 15px;
   margin-bottom: 5px;
   box-sizing: border-box;
 }
@@ -188,7 +189,6 @@ body {
 }
 
 .right {
-  flex: 1;
   text-align: right;
 }
 

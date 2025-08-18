@@ -1,5 +1,10 @@
 const tmdbApiKey = '9c2f7a7aaf9a57d7c1578d1d4f1f0145';
 
+function getRegionFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('region') || 'world';
+}
+
 async function fetchPoster(title) {
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${encodeURIComponent(title)}&year=2025`;
   try {
@@ -17,9 +22,23 @@ async function fetchPoster(title) {
 }
 
 async function renderTop10() {
-  const movies = JSON.parse(sessionStorage.getItem('top10Worldwide') || '[]');
+  const region = getRegionFromURL();
+  const key = 'top10Worldwide';
+  const movies = JSON.parse(sessionStorage.getItem(key) || '[]');
+
   const ul = document.getElementById('movieList');
+  const dateRange = document.getElementById('dateRange');
+
   if (!ul) return;
+
+  // Atualizar texto do range
+  if (region === 'pt') {
+    dateRange.textContent = '(Portugal 2025)';
+    flagIcon.src = 'Imagens/Portugal.png';
+  } else {
+    dateRange.textContent = '(Mundo 2025)';
+    flagIcon.src = 'Imagens/World.png';
+  }
 
   if (movies.length === 0) {
     ul.innerHTML = '<li>Nenhum dado para mostrar.</li>';
@@ -30,12 +49,7 @@ async function renderTop10() {
 
   const itemsHTML = await Promise.all(movies.map(async (movie) => {
     const posterURL = await fetchPoster(movie.filme);
-    console.log(movie.worldwide); // Confirma os valores
-
-    // Guarda o poster do primeiro filme para o container background
-    if (movie.rank === 1) {
-      containerPoster = posterURL;
-    }
+    if (movie.rank === 1) containerPoster = posterURL;
 
     return `
       <li class="movie-item" style="--poster-url: url(${posterURL})">
@@ -50,12 +64,9 @@ async function renderTop10() {
 
   ul.innerHTML = itemsHTML.join('');
 
-  // Aplica o poster no container
   if (containerPoster) {
     const container = document.querySelector('.container');
-    if (container) {
-      container.style.setProperty('--poster-url', `url(${containerPoster})`);
-    }
+    if (container) container.style.setProperty('--poster-url', `url(${containerPoster})`);
   }
 }
 
