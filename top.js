@@ -16,7 +16,7 @@ async function fetchPoster(title) {
   }
 }
 
-async function renderMovies(movies, containerId, headerId, title) {
+async function renderMovies(movies, containerId, headerId, title, selectedWeekend) {
   const headerEl = document.getElementById(headerId);
   headerEl.innerHTML = `
     <div class="header-text">
@@ -24,7 +24,7 @@ async function renderMovies(movies, containerId, headerId, title) {
       <div class="big-medium-wrapper">
         <div class="big-medium-text">
           <span class="big">${title}</span>
-          <span class="medium">(Fim de Semana 1-3 Agosto 2025)</span>
+          <span class="medium">(Fim de Semana ${selectedWeekend})</span>
         </div>
         <img src="Imagens/popcorn.png" alt="Popcorn" class="popcorn-icon" />
       </div>
@@ -87,7 +87,8 @@ async function renderMovies(movies, containerId, headerId, title) {
 (async () => {
   const top5Movies = JSON.parse(sessionStorage.getItem('boxOfficeTop5') || '[]');
   const top6Movies = JSON.parse(sessionStorage.getItem('boxOfficeTop6_10') || '[]');
+  const selectedWeekend = sessionStorage.getItem('selectedWeekend') || '';
 
-  await renderMovies(top5Movies, 'movieListTop5', 'headerTop5', 'Box Office Top 5');
-  await renderMovies(top6Movies, 'movieListTop6', 'headerTop6', 'Box Office Top 6-10');
+  await renderMovies(top5Movies, 'movieListTop5', 'headerTop5', 'Box Office Top 5', selectedWeekend);
+  await renderMovies(top6Movies, 'movieListTop6', 'headerTop6', 'Box Office Top 6-10', selectedWeekend);
 })();

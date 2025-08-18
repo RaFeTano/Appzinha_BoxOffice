@@ -1,6 +1,57 @@
 // --- BOX 1 ---
 let parsedData1 = [];
 
+// Função que gera todos os fins de semana de 2025
+function gerarFinsDeSemana(ano) {
+  const finsDeSemana = [];
+  let data = new Date(ano, 0, 1);
+
+  // ir até sexta-feira da primeira semana
+  while (data.getDay() !== 5) {
+    data.setDate(data.getDate() + 1);
+  }
+
+  while (data.getFullYear() === ano) {
+    const sexta = new Date(data);
+    const domingo = new Date(data);
+    domingo.setDate(domingo.getDate() + 2);
+
+    if (domingo.getFullYear() === ano) {
+      // formatar como "15-17 Agosto 2025"
+      const optionsMes = { month: "long" };
+      const mes = sexta.toLocaleDateString("pt-PT", optionsMes);
+      const label = `${sexta.getDate()}-${domingo.getDate()} ${mes.charAt(0).toUpperCase() + mes.slice(1)} ${ano}`;
+
+      finsDeSemana.push({ value: label, label });
+    }
+
+    data.setDate(data.getDate() + 7);
+  }
+
+  return finsDeSemana;
+}
+
+// Preencher dropdown ao carregar a página
+const weekendSelect = document.getElementById("weekendSelect");
+const fins = gerarFinsDeSemana(2025);
+fins.forEach(f => {
+  const opt = document.createElement("option");
+  opt.value = f.value;
+  opt.textContent = f.label;
+  weekendSelect.appendChild(opt);
+});
+
+// Recuperar última seleção do sessionStorage
+const savedWeekend = sessionStorage.getItem("selectedWeekend");
+if (savedWeekend) {
+  weekendSelect.value = savedWeekend;
+}
+
+// Guardar sempre que muda
+weekendSelect.addEventListener("change", () => {
+  sessionStorage.setItem("selectedWeekend", weekendSelect.value);
+});
+
 function parseBoxOffice(input) {
   const linhas = input.trim().split('\n').filter(l => l.trim() !== '');
   const resultados = [];
@@ -60,10 +111,9 @@ function gerarTabela(data, containerId) {
 
   // Botão Abrir Tops
   html += '<button id="abrirTops" class="botao-abrir">Abrir Tops</button>';
-
   container.innerHTML = html;
 
-  // Atualiza o valor worldwide no objeto quando editas o input
+  // Atualiza worldwide no objeto
   document.querySelectorAll('.worldwide-input').forEach(input => {
     input.addEventListener('input', (e) => {
       const idx = parseInt(e.target.dataset.index);
@@ -77,6 +127,10 @@ function gerarTabela(data, containerId) {
 
     sessionStorage.setItem('boxOfficeTop5', JSON.stringify(top5));
     sessionStorage.setItem('boxOfficeTop6_10', JSON.stringify(top6_10));
+
+    // Guardar o fim de semana escolhido
+    const weekend = weekendSelect.value;
+    sessionStorage.setItem("selectedWeekend", weekend);
 
     window.open('top.html?range=top5', '_blank');
     setTimeout(() => {
@@ -142,7 +196,6 @@ function gerarTabelaTop10(data) {
   });
 
   html += '</tbody></table>';
-
   container.innerHTML = html;
 
   const btnAbrir = document.createElement('button');
@@ -157,7 +210,7 @@ document.getElementById('parseBtn2').addEventListener('click', () => {
   const inputText = document.getElementById('inputText2').value;
   parsedData2 = parseTop10Worldwide(inputText);
 
-  // Preenche valores worldwide vazios com '0' antes de guardar
+  // Preenche valores worldwide vazios com '0'
   parsedData2 = parsedData2.map(item => {
     if (!item.worldwide || item.worldwide.trim() === '') {
       item.worldwide = '0';
@@ -165,10 +218,9 @@ document.getElementById('parseBtn2').addEventListener('click', () => {
     return item;
   });
 
-  // Guarda os 10 primeiros no sessionStorage
+  // Guarda no sessionStorage
   sessionStorage.setItem('top10Worldwide', JSON.stringify(parsedData2.slice(0, 10)));
 
-  // Gera a tabela
   gerarTabelaTop10(parsedData2);
 });
 

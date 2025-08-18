@@ -116,3 +116,23 @@ input.worldwide-input {
   text-align: right;
   font-weight: bold;
 }
+
+#weekendSelect {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: #fff;
+  font-size: 14px;
+  appearance: none; /* Remove estilo nativo do navegador */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+#weekendSelect option {
+  background-color: #333;
+  color: #fff;
+}
