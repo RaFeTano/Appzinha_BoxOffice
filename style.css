@@ -5,24 +5,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 20px; /* garante margem do telemóvel */
-  min-height: 100vh;
   margin: 0;
+  overflow: auto; /* permite scroll da página */
+  padding: 20px 0; /* margens superior/inferior */
 }
 
-.tops-wrapper {
+#page-wrapper {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
-.tops-wrapper .container {
-  width: 600px;
-  height: 750px;
-  max-width: 90%;        /* nunca ultrapassa o ecrã */
-  aspect-ratio: 600 / 750; /* mantém proporção */
+.container {
+  width: 600px; 
+  height: 770px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -32,11 +28,6 @@ body {
   border-radius: 10px;
 }
 
-
-
-
-
-/* Fundo blur escuro no container */
 .container::before {
   content: "";
   position: absolute;
@@ -53,16 +44,12 @@ body {
   transition: background-image 0.3s ease;
 }
 
-/* Conteúdo à frente do fundo */
 .container > * {
   position: relative;
   z-index: 1;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
-/* ========================== */
-/* Header                     */
-/* ========================== */
 .header {
   display: flex;
   flex-direction: column;
@@ -114,29 +101,15 @@ body {
   margin-left: 10px;
 }
 
-.popcorn-icon {
-  width: 55px !important;
-  height: 55px !important;
-  margin-left: 10px;
-  object-fit: contain;
-}
-
-/* ========================== */
-/* Lista de Filmes            */
-/* ========================== */
 .movie-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%;
 }
 
-/* ========================== */
-/* Item de Filme              */
-/* ========================== */
 .movie-item {
   position: relative;
-  width: 100%;
+  width: 510px;
   height: 100px;
   border-radius: 5px;
   margin-bottom: 10px;
@@ -157,8 +130,8 @@ body {
   background-position: center;
   filter: blur(8px) brightness(0.4);
   z-index: 0;
-  border-radius: 5px;
   transition: background-image 0.3s ease;
+  border-radius: 5px;
 }
 
 .movie-item > * {
@@ -175,6 +148,7 @@ body {
   margin-left: 10px;
   margin-right: 20px;
   line-height: 1;
+  padding-top: 0;
 }
 
 .poster {
@@ -242,6 +216,19 @@ body {
   z-index: 2;
 }
 
+.header img:not(.popcorn-icon) {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+}
+
+.popcorn-icon {
+  width: 55px !important;
+  height: 55px !important;
+  margin-left: 10px;
+  object-fit: contain;
+}
+
 .bottom-text {
   position: absolute;
   bottom: 50px;
@@ -255,4 +242,12 @@ body {
   pointer-events: none;
   user-select: none;
   z-index: 1;
+}
+
+.tops-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
 }
