@@ -21,7 +21,7 @@ body {
 
 .tops-wrapper .container {
   width: 600px;           /* largura ideal */
-  max-width: calc(100% - 80px); /* não ultrapassa a tela com 20px de margem */
+  max-width: calc(100% - 200px); /* não ultrapassa a tela com 20px de margem */
   height: 750px;
   padding: 20px;
   display: flex;
@@ -56,7 +56,7 @@ body {
 .container > * {
   position: relative;
   z-index: 1;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 /* ========================== */
