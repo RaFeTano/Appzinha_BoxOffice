@@ -7,7 +7,7 @@ body {
   align-items: flex-start;
   margin: 0;
   overflow: auto; /* permite scroll da página */
-  padding: 20px 0; /* margens superior/inferior */
+  padding: 10px 0; /* margens superior/inferior */
 }
 
 #page-wrapper {

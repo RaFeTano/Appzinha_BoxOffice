@@ -36,9 +36,54 @@ fins.forEach(f => {
   weekendSelect.appendChild(opt);
 });
 
-const savedWeekend = sessionStorage.getItem("selectedWeekend");
-if (savedWeekend) weekendSelect.value = savedWeekend;
+const mesesPt = {
+  "janeiro": 0,
+  "fevereiro": 1,
+  "março": 2,
+  "abril": 3,
+  "maio": 4,
+  "junho": 5,
+  "julho": 6,
+  "agosto": 7,
+  "setembro": 8,
+  "outubro": 9,
+  "novembro": 10,
+  "dezembro": 11
+};
 
+function getClosestWeekend() {
+  const today = new Date();
+  let closest = fins[0].value;
+  let minDiff = Infinity;
+
+  fins.forEach(f => {
+    const match = f.value.match(/^(\d+)-(\d+) (\w+) (\d+)$/);
+    if (!match) return;
+
+    const dia = parseInt(match[1], 10);
+    const mesStr = match[3].toLowerCase();
+    const ano = parseInt(match[4], 10);
+
+    const mes = mesesPt[mesStr];
+    if (mes === undefined) return;
+
+    const sexta = new Date(ano, mes, dia);
+    const diff = Math.abs(today - sexta);
+
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = f.value;
+    }
+  });
+
+  return closest;
+}
+
+
+// Selecionar sempre o fim de semana mais próximo
+weekendSelect.value = getClosestWeekend();
+
+// Guardar no sessionStorage ao mudar, caso queiras usar mais tarde
 weekendSelect.addEventListener("change", () => {
   sessionStorage.setItem("selectedWeekend", weekendSelect.value);
 });
