@@ -7,12 +7,13 @@
 <link href="top10.css" rel="stylesheet" />
 </head>
 <body>
-  <div class="container-wrapper">
+  <div id="page-wrapper">
+    <div class="tops-wrapper">
     <div class="container">
-      <div class="header" id="header">
+      <div class="header">
         <div class="big-medium-wrapper">
           <img src="" alt="Bandeira" class="flag-icon" id="flagIcon" />
-          <div class="big-medium-text" id="titleWrapper">
+          <div class="big-medium-text">
             <span class="small">@Rafe.Studios</span>
             <span class="big">Top 10 de Filmes</span>
             <span class="medium" id="dateRange"></span>
@@ -20,26 +21,13 @@
           <img src="Imagens/popcorn.png" alt="Popcorn" class="popcorn-icon" />
         </div>
       </div>
+
       <ul id="movieList" class="movie-list"></ul>
+    </div>
     </div>
   </div>
 
   <script src="top10.js"></script>
-  <script>
-    function fitContainer() {
-      const containerWrapper = document.querySelector('.container-wrapper');
-      const screenWidth = window.innerWidth;
-      const scale = Math.min(1, screenWidth / 640); // 600px container + 2*20px margens
-      containerWrapper.style.transform = `scale(${scale})`;
-      containerWrapper.style.display = 'flex';
-      containerWrapper.style.justifyContent = 'center';
-      containerWrapper.style.margin = '0 auto';
-      containerWrapper.style.width = '100%';
-      containerWrapper.style.transformOrigin = 'top center';
-    }
-
-    window.addEventListener('load', fitContainer);
-    window.addEventListener('resize', fitContainer);
-  </script>
+  <script src="scale.js"></script>
 </body>
 </html>

@@ -6,17 +6,14 @@ body {
   justify-content: center;
   align-items: flex-start;
   margin: 0;
-  overflow-x: hidden;
+  overflow: auto;
   padding: 10px 0;
-  width: 100%;
 }
 
-.container-wrapper {
+#page-wrapper {
   display: flex;
   justify-content: center;
-  transform-origin: top center;
   width: 100%;
-  overflow-x: hidden;
 }
 
 .container {
@@ -198,4 +195,12 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   text-align: right;
+}
+
+.tops-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
 }
