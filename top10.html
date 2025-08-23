@@ -20,12 +20,22 @@
           <img src="Imagens/popcorn.png" alt="Popcorn" class="popcorn-icon" />
         </div>
       </div>
-
       <ul id="movieList" class="movie-list"></ul>
     </div>
   </div>
 
   <script src="top10.js"></script>
-  <script src="scale.js"></script>
+  <script>
+    function fitContainer() {
+      const containerWrapper = document.querySelector('.container-wrapper');
+      const screenWidth = window.innerWidth;
+      const scale = Math.min(1, screenWidth / 640); // 600px container + 2*20px margens
+      containerWrapper.style.transform = `scale(${scale})`;
+      containerWrapper.style.margin = '0 auto'; // centraliza
+    }
+
+    window.addEventListener('load', fitContainer);
+    window.addEventListener('resize', fitContainer);
+  </script>
 </body>
 </html>

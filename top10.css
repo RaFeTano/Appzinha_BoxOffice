@@ -6,23 +6,16 @@ body {
   justify-content: center;
   align-items: flex-start;
   margin: 0;
+  overflow-x: hidden;
   padding: 10px 0;
-  overflow: auto; /* scroll da página */
-}
-
-#page-wrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
 }
 
 .container-wrapper {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  transform-origin: top center; /* zoom a partir do topo */
-  /* valor de scale ajustável conforme ecrã */
-  transform: scale(0.85);
+  transform-origin: top center;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .container {
@@ -37,7 +30,6 @@ body {
   border-radius: 10px;
 }
 
-/* Fundo blur escuro no container */
 .container::before {
   content: "";
   position: absolute;
@@ -54,7 +46,6 @@ body {
   transition: background-image 0.3s ease;
 }
 
-/* Conteúdo do container à frente do fundo */
 .container > * {
   position: relative;
   z-index: 1;
@@ -206,12 +197,4 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   text-align: right;
-}
-
-.tops-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: flex-start;
-  align-items: center;
 }
