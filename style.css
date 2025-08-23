@@ -2,27 +2,27 @@ body {
   background-color: #202020;
   color: #fff;
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   display: flex;
-  justify-content: center; /* centra horizontalmente a wrapper */
+  justify-content: center;
   align-items: flex-start;
+  padding: 20px; /* garante margem do telemóvel */
   min-height: 100vh;
+  margin: 0;
 }
 
 .tops-wrapper {
   display: flex;
-  flex-direction: column; /* empilha verticalmente */
+  flex-direction: column;
   gap: 20px;
-  justify-content: flex-start;
-  align-items: center; /* centra os containers */
-  margin: 0 20px; /* distância de 20px das margens do telemóvel */
+  align-items: center;
+  width: 100%;
 }
 
 .tops-wrapper .container {
-  width: 600px;           /* largura ideal */
-  max-width: calc(100% - 200px); /* não ultrapassa a tela com 20px de margem */
+  width: 600px;
   height: 750px;
+  max-width: 90%;        /* nunca ultrapassa o ecrã */
+  aspect-ratio: 600 / 750; /* mantém proporção */
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -31,6 +31,7 @@ body {
   overflow: hidden;
   border-radius: 10px;
 }
+
 
 
 
