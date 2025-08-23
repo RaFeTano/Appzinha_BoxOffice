@@ -1,6 +1,6 @@
 function scalePage() {
   const wrapper = document.getElementById('page-wrapper');
-  const maxWidth = 1000;   // largura de cada container
+  const maxWidth = 600;   // largura de cada container
   const maxHeight = 1600; // altura aproximada dos dois containers juntos
   const availableWidth = window.innerWidth; // 20px margem esquerda + direita
   const scale = Math.min(
