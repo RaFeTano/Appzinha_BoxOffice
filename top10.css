@@ -4,13 +4,20 @@ body {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  align-items: flex-start;
   margin: 0;
+  overflow: auto; /* permite scroll da página */
+  padding: 10px 0; /* margens superior/inferior */
+}
+
+#page-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .container {
-  width: 600px;
+  width: 600px; 
   height: 770px;
   padding: 20px;
   display: flex;
