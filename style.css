@@ -6,7 +6,8 @@ body {
   color: #fff;
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 20px 0; /* espaço para scroll */
+  padding: 20px 10px; /* margens laterais para telemóvel */
+  box-sizing: border-box;
 }
 
 /* ========================== */
@@ -18,22 +19,27 @@ body {
   gap: 20px;
   justify-content: flex-start;
   align-items: center; /* centra horizontalmente */
+  width: 100%;
+  max-width: 640px; /* para não ultrapassar ecrãs grandes */
+  margin: 0 auto; /* centra a wrapper na página */
 }
 
 /* ========================== */
 /* Containers                 */
 /* ========================== */
 .tops-wrapper .container {
-  width: 600px;
+  width: 100%; /* ocupa toda a largura disponível */
+  max-width: 600px; /* não fica demasiado largo em telemóveis grandes */
   height: 750px;
   padding: 20px;
   display: flex;
-  flex-direction: column; /* empilha o conteúdo dentro do container */
+  flex-direction: column;
   align-items: center;
   position: relative;
   overflow: hidden;
   border-radius: 10px;
 }
+
 
 /* Fundo blur escuro no container */
 .container::before {
