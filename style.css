@@ -20,7 +20,8 @@ body {
 }
 
 .tops-wrapper .container {
-  width: 600px; /* mantém proporções originais */
+  width: 600px;           /* largura ideal */
+  max-width: calc(100% - 80px); /* não ultrapassa a tela com 20px de margem */
   height: 750px;
   padding: 20px;
   display: flex;
@@ -30,6 +31,7 @@ body {
   overflow: hidden;
   border-radius: 10px;
 }
+
 
 
 
