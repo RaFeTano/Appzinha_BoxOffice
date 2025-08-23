@@ -1,35 +1,26 @@
-/* ========================== */
-/* Body e Página              */
-/* ========================== */
 body {
   background-color: #202020;
   color: #fff;
   font-family: Arial, sans-serif;
   margin: 0;
-  padding: 20px 10px; /* margens laterais para telemóvel */
-  box-sizing: border-box;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* centra horizontalmente a wrapper */
+  align-items: flex-start;
+  min-height: 100vh;
 }
 
-/* ========================== */
-/* Wrapper dos Tops           */
-/* ========================== */
 .tops-wrapper {
   display: flex;
   flex-direction: column; /* empilha verticalmente */
   gap: 20px;
   justify-content: flex-start;
-  align-items: center; /* centra horizontalmente */
-  width: 100%;
-  max-width: 640px; /* para não ultrapassar ecrãs grandes */
-  margin: 0 auto; /* centra a wrapper na página */
+  align-items: center; /* centra os containers */
+  margin: 0 20px; /* distância de 20px das margens do telemóvel */
 }
 
-/* ========================== */
-/* Containers                 */
-/* ========================== */
 .tops-wrapper .container {
-  width: 100%; /* ocupa toda a largura disponível */
-  max-width: 600px; /* não fica demasiado largo em telemóveis grandes */
+  width: 600px; /* mantém proporções originais */
   height: 750px;
   padding: 20px;
   display: flex;
@@ -39,6 +30,7 @@ body {
   overflow: hidden;
   border-radius: 10px;
 }
+
 
 
 /* Fundo blur escuro no container */
