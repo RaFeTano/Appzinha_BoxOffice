@@ -1,3 +1,4 @@
+/* ===== Corpo da página ===== */
 body {
   font-family: Arial, sans-serif;
   background-color: #1a1a2e;
@@ -11,36 +12,30 @@ h1 {
   margin-bottom: 30px;
 }
 
-/* Container principal: boxes à esquerda, tabelas à direita */
+/* ===== Container principal ===== */
 .container-flex {
   display: flex;
-  flex-direction: row; /* esquerda e direita */
+  flex-direction: column; /* empilha as boxes verticalmente */
   gap: 20px;
   width: 100%;
-  max-width: 1200px;
   margin: auto;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
-/* Caixas à esquerda empilhadas verticalmente */
-.boxes-left {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 33%;
-}
-
-/* Cada box individual */
+/* ===== Cada box ===== */
 .box {
+  width: 100%; /* ocupa toda a largura disponível */
   background-color: #16213e;
   padding: 20px;
   border-radius: 10px;
+  box-sizing: border-box;
 }
 
 .box p {
   margin-bottom: 10px;
 }
 
+/* ===== Textareas ===== */
 textarea {
   width: 100%;
   height: 120px;
@@ -48,10 +43,11 @@ textarea {
   font-size: 14px;
   border-radius: 5px;
   border: none;
-  padding: 8px;
+  
   resize: none;
 }
 
+/* ===== Botões ===== */
 button {
   padding: 8px 15px;
   font-size: 16px;
@@ -72,16 +68,35 @@ button:hover {
   margin-top: 10px;
 }
 
-/* Container da tabela à direita */
-.table-right {
-  width: 66%;
+/* ===== Dropdown do fim de semana ===== */
+#weekendSelect {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #555;
+  background-color: #333;
+  color: #fff;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
 }
 
-/* Tabela em si */
+#weekendSelect option {
+  background-color: #333;
+  color: #fff;
+}
+
+/* ===== Tabelas dentro das boxes ===== */
+#result1, #result2 {
+  width: 100%;
+  margin-top: 15px;
+  overflow-x: auto; /* permite scroll horizontal se a tabela for larga */
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
 }
 
 th, td {
@@ -98,16 +113,19 @@ th {
   background-color: #0f3460;
 }
 
+/* ===== Botão "Abrir Top" dentro da tabela ===== */
 .botao-abrir {
   margin-top: 10px;
   width: 100%;
   background-color: #53354a;
+  cursor: pointer;
 }
 
 .botao-abrir:hover {
   background-color: #903749;
 }
 
+/* ===== Inputs de worldwide ===== */
 input.worldwide-input {
   width: 100%;
   border: none;
@@ -115,24 +133,4 @@ input.worldwide-input {
   color: white;
   text-align: right;
   font-weight: bold;
-}
-
-#weekendSelect {
-  width: 100%;
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #555;
-  background-color: #333;
-  color: #fff;
-  font-size: 14px;
-  appearance: none; /* Remove estilo nativo do navegador */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-}
-
-#weekendSelect option {
-  background-color: #333;
-  color: #fff;
 }

@@ -14,18 +14,19 @@
 
 <div class="container-flex">
   <div class="boxes-left">
+
     <div class="box" id="box1">
       <p>Cole o texto bruto da box office e clique em "Parse":</p>
-
-      <!-- Dropdown de fins de semana -->
       <label for="weekendSelect">Escolher fim de semana:</label>
       <select id="weekendSelect"></select>
-
       <textarea id="inputText1" placeholder="Cole aqui o texto..."></textarea>
       <div class="buttons-row">
         <button id="parseBtn1">Parse</button>
         <button id="clearBtn1">Limpar</button>
       </div>
+
+      <!-- Tabela do Box 1 -->
+      <div id="result1"></div>
     </div>
 
     <div class="box" id="box2">
@@ -35,14 +36,12 @@
         <button id="parseBtn2">Parse</button>
         <button id="clearBtn2">Limpar</button>
       </div>
-    </div>
-  </div>
 
-  <div class="table-right">
-    <div id="result1"></div>
-    <div id="result2"></div>
+      <!-- Tabela do Box 2 -->
+      <div id="result2"></div>
+    </div>
+
   </div>
-</div>
 
 <script src="index.js"></script>
 <script>
