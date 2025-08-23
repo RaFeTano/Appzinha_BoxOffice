@@ -31,7 +31,11 @@
       const screenWidth = window.innerWidth;
       const scale = Math.min(1, screenWidth / 640); // 600px container + 2*20px margens
       containerWrapper.style.transform = `scale(${scale})`;
-      containerWrapper.style.margin = '0 auto'; // centraliza
+      containerWrapper.style.display = 'flex';
+      containerWrapper.style.justifyContent = 'center';
+      containerWrapper.style.margin = '0 auto';
+      containerWrapper.style.width = '100%';
+      containerWrapper.style.transformOrigin = 'top center';
     }
 
     window.addEventListener('load', fitContainer);
