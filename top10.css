@@ -6,8 +6,8 @@ body {
   justify-content: center;
   align-items: flex-start;
   margin: 0;
-  overflow: auto; /* permite scroll da página */
-  padding: 10px 0; /* margens superior/inferior */
+  padding: 10px 0;
+  overflow: auto; /* scroll da página */
 }
 
 #page-wrapper {
@@ -17,8 +17,12 @@ body {
 }
 
 .container-wrapper {
-  transform: scale(0.5); /* zoom out para caber no ecrã do telemóvel */
-  transform-origin: top center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  transform-origin: top center; /* zoom a partir do topo */
+  /* valor de scale ajustável conforme ecrã */
+  transform: scale(0.85);
 }
 
 .container {
